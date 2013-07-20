@@ -1,47 +1,62 @@
-Turtle t;
+ArrayList<Turtle> turtles;
 
 void setup() {
-  size(800, 800, P2D);
+  size(1440, 900, P2D);
   frameRate(60000);
   smooth();  
   background(255);
   stroke(0);
-  strokeWeight(1);
-
-  HashMap productions = new HashMap();
-  productions.put('l', "l+r++r-l--ll-r+");
-  productions.put('r', "-l+rr++r+l--l-r");
-  String axiom = "l";
-
-  for (int i = 0;  i < 5; i++) {
-    axiom = gen(axiom, productions);
-  }
+  strokeWeight(2);
+  strokeCap(ROUND);
   
-  HashMap commands = new HashMap();
-  commands.put('F', drawForward);
-  commands.put('f', moveForward);
-  commands.put('-', turnRight);
-  commands.put('+', turnLeft);
-  commands.put('r', drawForward);
-  commands.put('l', drawForward);
-  
-  t = new Turtle(width * 0.75, height * 0.25, PI * 0.5, 4.0, PI / 3.0);
-  t.run(commands, axiom);
+  turtles = new ArrayList<Turtle>();
+  turtles.add(tree_1_6_a());
 }
 
 void draw() {
-  t.update();
+  for (Turtle t : turtles) {
+    t.update();
+  }
 }
 
-String gen(String input, HashMap productions) {
-  StringBuffer buf = new StringBuffer();
-  for (int i = 0; i < input.length(); i++) {
-    char c = input.charAt(i);
-    if (!productions.containsKey(c)) {
-      buf.append(c);
-      continue;
-    }
-    buf.append((String)productions.get(c));
-  }
-  return buf.toString();
+Turtle hilbertCurve() {
+  LSystem s = new LSystem();
+  s.rule('A', "-BF+AFA+FB-");
+  s.rule('B', "+AF-BFB-FA+");
+  String program = s.gen("A", 7);
+
+  Turtle t = new Turtle(0, height, PI * 0.5, 4.0, PI / 2.0);
+  t.run(program);
+  return t;
+}
+
+Turtle gosperCurve() {
+  LSystem s = new LSystem();
+  s.rule('l', "l+r++r-l--ll-r+");
+  s.rule('r', "-l+rr++r+l--l-r");
+  String program = s.gen("l", 5);
+
+  Turtle t = new Turtle(width * 0.75, height * 0.25, PI * 0.5, 4.0, PI / 3.0);
+  t.run(program);
+  return t;
+}
+
+Turtle tree_1_6_a() {
+  LSystem s = new LSystem();
+  s.rule('F', "F[+F]F[-F]F");
+  String program = s.gen("F", 5);
+  
+  Turtle t = new Turtle(width * 0.5, height, radians(90), 4.0, radians(25.7));
+  t.run(program);
+  return t;
+}
+
+Turtle tree_1_6_b() {
+  LSystem s = new LSystem();
+  s.rule('F', "F[+F]F[-F][F]");
+  String program = s.gen("F", 5);
+  
+  Turtle t = new Turtle(width * 0.5, height, radians(90), 8.0, radians(20));
+  t.run(program);
+  return t;
 }
