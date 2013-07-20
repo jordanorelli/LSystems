@@ -1,36 +1,50 @@
 import java.util.Stack;
 
-boolean REPORT_MOVES = true;
+boolean REPORT_MOVES = false;
 
 class TurtleState {
   public PVector position;
   public float heading;
-  
+
   TurtleState(PVector position, float heading) {
     this.position = position;
     this.heading = heading;
   }
 }
 
-class Turtle {
-  public PVector position;
+public class Turtle {
+  public TurtleState initialState;
+  public PVector position; // current drawhead
   public float heading;
   public float stride;
   public float theta;
+  private int born;
   private HashMap commands;
   private String program;
   private Stack history;
-  
-  Turtle(float x, float y, float heading, float stride, float theta) {
-    this.position = new PVector(x, y);
-    this.heading = heading;
+
+  Turtle(PApplet app, float x, float y, float heading, float stride, float theta) {
     this.stride = stride;
     this.theta = theta;
     this.commands = new HashMap();
     this.setDefaultCommands();
+    this.born = frameCount;
     this.history = new Stack();
+    this.initialState = new TurtleState(new PVector(x, y), heading);
+    this.clear();
+    this.register(app);
   }
   
+  public void register(PApplet app) {
+    app.registerDraw(this);
+    app.registerPost(this);
+  }
+  
+  public void unregister(PApplet app) {
+    app.unregisterDraw(this);
+    app.unregisterPost(this);
+  }
+
   public void setDefaultCommands() {
     this.cmd('F', drawForward);
     this.cmd('f', moveForward);
@@ -41,43 +55,63 @@ class Turtle {
     this.cmd('[', fork);
     this.cmd(']', unfork);
   } 
-  
+
   public void run(String program) {
     println(program);
     this.program = program;
   }
-  
+
   public void cmd(char c, TurtleCommand command) {
     this.commands.put(c, command);
   }
-  
-  void update() {
-    if (frameCount-1 >= this.program.length()) {
-      return;
-    }
-    char c = this.program.charAt(frameCount-1);
-    if (!this.commands.containsKey(c)) {
-      return;
-    }
-    TurtleCommand cmd = (TurtleCommand)this.commands.get(c);
-    cmd.run(this);    
+
+  private int age() {
+    return frameCount - this.born + 1;
   }
-  
+
+  void draw() {
+    for (int i = 0; i < this.program.length(); i++) {
+      char c = this.program.charAt(i);
+      if (!this.commands.containsKey(c)) {
+        return;
+      }
+      TurtleCommand cmd = (TurtleCommand)this.commands.get(c);
+      cmd.run(this);
+    }
+  }
+
+  void post() {
+    this.clear();
+  }
+
+  void clear() {
+    if (this.history != null) {
+      this.history.empty();
+    }
+    if (this.initialState != null) {      
+      this.position = this.initialState.position.get();
+      this.heading = this.initialState.heading;
+    }
+  }
+
   TurtleState getState() {
     return new TurtleState(this.position.get(), this.heading);
   }
-  
+
   void loadState(TurtleState s) {
     this.position.x = s.position.x;
     this.position.y = s.position.y;
     this.heading = s.heading;
   }
-  
+
   void fork() {
     this.history.push(this.getState());
   }
 
   void unfork() {
+    if (this.history.size() <= 0) {
+      return;
+    }
     TurtleState s = (TurtleState)this.history.pop();
     this.loadState(s);
   }
@@ -96,7 +130,7 @@ TurtleCommand drawForward = new TurtleCommand() {
     float y = t.position.y - t.stride * sin(t.heading);
     line(t.position.x, t.position.y, x, y);
     t.position.x = x;
-    t.position.y = y; 
+    t.position.y = y;
   }
 };
 
@@ -139,3 +173,4 @@ TurtleCommand unfork = new TurtleCommand() {
     t.unfork();
   }
 };
+
