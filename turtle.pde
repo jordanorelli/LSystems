@@ -20,8 +20,8 @@ public class Turtle {
   public float theta;
   private int born;
   private HashMap commands;
-  private String program;
   private Stack history;
+  private PGraphics buf;
 
   Turtle(PApplet app, float x, float y, float heading, float stride, float theta) {
     this.stride = stride;
@@ -57,8 +57,20 @@ public class Turtle {
   } 
 
   public void run(String program) {
-    println(program);
-    this.program = program;
+    this.buf = createGraphics(width, height, P2D);
+    this.buf.beginDraw();
+    this.buf.background(255, 255, 255, 0);
+    this.buf.stroke(0);
+    this.buf.strokeWeight(2);
+    for (int i = 0; i < program.length(); i++) {
+      char c = program.charAt(i);
+      if (!this.commands.containsKey(c)) {
+        return;
+      }
+      TurtleCommand cmd = (TurtleCommand)this.commands.get(c);
+      cmd.run(this);
+    }
+    buf.endDraw();
   }
 
   public void cmd(char c, TurtleCommand command) {
@@ -70,13 +82,8 @@ public class Turtle {
   }
 
   void draw() {
-    for (int i = 0; i < this.program.length(); i++) {
-      char c = this.program.charAt(i);
-      if (!this.commands.containsKey(c)) {
-        return;
-      }
-      TurtleCommand cmd = (TurtleCommand)this.commands.get(c);
-      cmd.run(this);
+    if (this.buf != null) {
+      image(this.buf, 0, 0);
     }
   }
 
@@ -128,7 +135,7 @@ TurtleCommand drawForward = new TurtleCommand() {
     }
     float x = t.position.x + t.stride * cos(t.heading);
     float y = t.position.y - t.stride * sin(t.heading);
-    line(t.position.x, t.position.y, x, y);
+    t.buf.line(t.position.x, t.position.y, x, y);
     t.position.x = x;
     t.position.y = y;
   }

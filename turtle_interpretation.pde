@@ -1,7 +1,10 @@
 ArrayList<Turtle> turtles;
-boolean FULL_SCREEN = false;
+boolean FULL_SCREEN = true;
 int WIDTH = 720;
 int HEIGHT = 850;
+CurveDefinition def;
+int generations = 1;
+ArrayList<CurveDefinition> curves;
 
 void setup() {
   smooth();  
@@ -9,27 +12,71 @@ void setup() {
   stroke(0);
   strokeWeight(2);
   strokeCap(ROUND);
-  
+
   turtles = new ArrayList<Turtle>();
+  curves = new ArrayList<CurveDefinition>();
+  curves.add(tree_1_27);
+  curves.add(jorelli_0);
+  curves.add(tree_1_24_b);
+  curves.add(tree_1_24_a);
+  curves.add(gosperCurve);
+  curves.add(hilbertCurve);
+  def = curves.get(0);
 }
 
 void draw() {
   background(255);
+  fill(0);
+  text(generations + " " + def.name(), mouseX, mouseY);
 }
 
 void mousePressed(MouseEvent event) {
-  pushTurtle(tree_1_27(event.getX(), event.getY()));
+  pushTurtle(def.drawAt(this, event.getX(), event.getY(), generations));
 }
 
 void mouseWheel(MouseEvent event) {
   println(event.getAmount());
+  if (event.getAmount() > 0) {
+    generations++;
+  } else {
+    if (generations > 1) {
+      generations--;
+    }
+  }
 }
 
 void keyPressed(KeyEvent event) {
   switch (event.getKeyCode()) {
   case 8:
     popTurtle();
+    break;
+  case 39:
+    nextCurve(false);
+    break;
+  case 37:
+    nextCurve(true);
+    break;
+  default:
+    println(event.getKeyCode());
   }
+}
+
+void nextCurve(boolean reverse) {
+  int i = curves.indexOf(def);
+  if (reverse) {
+    i--;
+  } 
+  else { 
+    i++;
+  }
+
+  if (i < 0) {
+    i = curves.size() - 1;
+  }
+  if (i >= curves.size()) {
+    i = 0;
+  }
+  def = curves.get(i);  
 }
 
 void pushTurtle(Turtle t) {
@@ -38,6 +85,9 @@ void pushTurtle(Turtle t) {
 
 void popTurtle() {
   int n = turtles.size() - 1;
+  if (n < 0) {
+    return;
+  }
   Turtle t = turtles.get(n);
   t.unregister(this);
   turtles.remove(n);
@@ -57,59 +107,5 @@ int sketchHeight() {
 
 String sketchRenderer() {
   return P2D;
-}
-
-Turtle hilbertCurve() {
-  LSystem s = new LSystem();
-  s.rule('A', "-BF+AFA+FB-");
-  s.rule('B', "+AF-BFB-FA+");
-  String program = s.gen("A", 7);
-
-  Turtle t = new Turtle(this, 0, height, PI * 0.5, 4.0, PI / 2.0);
-  t.run(program);
-  return t;
-}
-
-Turtle gosperCurve() {
-  LSystem s = new LSystem();
-  s.rule('l', "l+r++r-l--ll-r+");
-  s.rule('r', "-l+rr++r+l--l-r");
-  String program = s.gen("l", 5);
-
-  Turtle t = new Turtle(this, width * 0.75, height * 0.25, PI * 0.5, 4.0, PI / 3.0);
-  t.run(program);
-  return t;
-}
-
-Turtle tree_1_24_a() {
-  LSystem s = new LSystem();
-  s.rule('F', "F[+F]F[-F]F");
-  String program = s.gen("F", 5);
-  
-  Turtle t = new Turtle(this, width * 0.5, height, radians(90), 4.0, radians(25.7));
-  t.run(program);
-  return t;
-}
-
-Turtle tree_1_24_b() {
-  LSystem s = new LSystem();
-  s.rule('F', "F[+F]F[-F][F]");
-  String program = s.gen("F", 5);
-  
-  Turtle t = new Turtle(this, width * 0.5, height, radians(90), 8.0, radians(20));
-  t.run(program);
-  return t;
-}
-
-Turtle tree_1_27(float x, float y) {
-  LSystem s = new LSystem();
-  s.rule('F', "F[+F]F[-F]F", 1.0 / 3.0);
-  s.rule('F', "F[+F]F", 1.0 / 3.0);
-  s.rule('F', "F[-f]F", 1.0 / 3.0);
-  String program = s.gen("F", 5);
-
-  Turtle t = new Turtle(this, x, y, radians(90), 8.0, radians(20));
-  t.run(program);
-  return t;  
 }
 
