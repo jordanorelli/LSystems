@@ -1,71 +1,83 @@
 interface Production {
+  // whether to accept the character at index "index"
+  // as seen in the string "axiom"
+  boolean accept(String axiom, int index);
   String successor();
 }
 
 // deterministic production
 class DProduction implements Production {
-  private String s;
-  DProduction(String s) { 
-    this.s = s;
+  private char pred;
+  private String succ;
+
+  DProduction(char pred, String succ) { 
+    this.succ = succ;
+    this.pred = pred;
   }
+
+  boolean accept(String axiom, int index) {
+    return axiom.charAt(index) == this.pred;
+  }
+
   String successor() { 
-    return this.s;
+    return this.succ;
   }
 }
 
 // This shit is getting verbose.
 class SPSuccessor {
   float probability;
-  String successor;
+  String succ;
 
-  SPSuccessor(String successor, float probability) {
+  SPSuccessor(String succ, float probability) {
     this.probability = probability;
-    this.successor = successor;
+    this.succ = succ;
   }
 }
 
-// stochastic production
+// stochastic production, context-free
 class SProduction implements Production {
-  ArrayList<SPSuccessor> successors;
-  SProduction(String successor, float probability) {
+  private ArrayList<SPSuccessor> successors;
+  private char pred;
+
+  SProduction(char pred) {
+    this.pred = pred;
     this.successors = new ArrayList<SPSuccessor>();
-    this.add(successor, probability);
   }
+
+  boolean accept(String axiom, int index) {
+    return this.pred == axiom.charAt(index);
+  }
+
   String successor() {
     float n = random(1.0);
     for (SPSuccessor s : this.successors) {
       if (n < s.probability) {
-        return s.successor;
+        return s.succ;
       }
       n -= s.probability;
     }
-    println("well, fuck it."); 
-    exit(); 
-    return "";
+    return this.successor();
   }
+
   void add(String successor, float probability) {
     this.successors.add(new SPSuccessor(successor, probability));
   }
 }
 
 class LSystem {
-  private HashMap productions;
+  private ArrayList<Production> productions;
 
   LSystem() {
-    this.productions = new HashMap();
+    this.productions = new ArrayList<Production>();
   }
-
-  public void rule(char c, String out) {
-    this.productions.put(c, new DProduction(out)); 
+  
+  public void rule(Production p) {
+    this.productions.add(p);
   }
-
-  public void rule(char c, String out, float probability) {
-    if (this.productions.containsKey(c)) {
-      SProduction p = (SProduction)this.productions.get(c);
-      p.add(out, probability);
-    } else {
-      this.productions.put(c, new SProduction(out, probability));      
-    }
+  
+  public void rule(char predecessor, String successor) {
+    this.productions.add(new DProduction(predecessor, successor));
   }
 
   public String gen(String axiom, int n) {
@@ -75,17 +87,28 @@ class LSystem {
     return axiom;
   }
 
+  private Production production(String axiom, int index) {
+    for (Production p : this.productions) {
+      if (p.accept(axiom, index)) {
+        return p;
+      }
+    }
+    return null;
+  }
+
   private String genOne(String axiom) {
     StringBuffer buf = new StringBuffer();
+
     for (int i = 0; i < axiom.length(); i++) {
-      char c = axiom.charAt(i);
-      if (!this.productions.containsKey(c)) {
-        buf.append(c);
-        continue;
+      Production p = this.production(axiom, i);
+      if (p != null) {
+        buf.append(p.successor());
+      } 
+      else {
+        buf.append(axiom.charAt(i));
       }
-      Production p = (Production)this.productions.get(c);
-      buf.append(p.successor());
     }
+
     return buf.toString();
   }
 }
