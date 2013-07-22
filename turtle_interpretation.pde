@@ -1,10 +1,10 @@
-ArrayList<Turtle> turtles;
+ArrayList<Turtle> turtles = new ArrayList<Turtle>();;
 boolean FULL_SCREEN = true;
 int WIDTH = 720;
 int HEIGHT = 850;
 CurveDefinition def;
 int generations = 1;
-ArrayList<CurveDefinition> curves;
+ArrayList<CurveDefinition> curves = new ArrayList<CurveDefinition>();
 
 void setup() {
   smooth();  
@@ -13,10 +13,10 @@ void setup() {
   strokeWeight(2);
   strokeCap(ROUND);
 
-  turtles = new ArrayList<Turtle>();
-  curves = new ArrayList<CurveDefinition>();
   curves.add(tree_1_27);
   curves.add(jorelli_0);
+  curves.add(left_context_0);
+  curves.add(left_context_1);  
   curves.add(tree_1_24_b);
   curves.add(tree_1_24_a);
   curves.add(gosperCurve);

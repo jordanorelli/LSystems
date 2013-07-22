@@ -129,3 +129,42 @@ CurveDefinition jorelli_0 = new CurveDefinition() {
     return t;    
   }
 };
+
+CurveDefinition left_context_0 = new CurveDefinition() {
+  String name() {
+    return "left_context_0";
+  }
+  
+  Turtle drawAt(PApplet app, int x, int y, int generations) {
+    LSystem s = new LSystem();
+    s.ruleLeft('b', 'a', "b");
+    s.rule('b', "a");
+    String program = s.gen("baaaaaaa", generations);
+
+    Turtle t = new Turtle(app, x, y, 0, 8.0, radians(90));
+    t.cmd('a', drawForward);
+    t.cmd('b', drawForwardRed);
+    t.run(program);
+    return t;    
+  }
+};
+
+CurveDefinition left_context_1 = new CurveDefinition() {
+  String name() {
+    return "left_context_1";
+  }
+  
+  Turtle drawAt(PApplet app, int x, int y, int generations) {
+    LSystem s = new LSystem();
+    s.ruleLeft('b', 'a', "b");
+    s.rule('b', "a");
+    String program = s.gen("aabaa[+aa+aaa][-FF[+FF]]aaaaaaa", generations);
+
+    Turtle t = new Turtle(app, x, y, radians(90), 8.0, radians(20));
+    t.cmd('a', drawForward);
+    t.cmd('b', drawForwardRed);
+    t.run(program);
+    return t;    
+  }
+};
+

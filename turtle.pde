@@ -24,6 +24,7 @@ public class Turtle {
   private PGraphics buf;
 
   Turtle(PApplet app, float x, float y, float heading, float stride, float theta) {
+    this.buf = createGraphics(width, height, P2D);    
     this.stride = stride;
     this.theta = theta;
     this.commands = new HashMap();
@@ -57,11 +58,8 @@ public class Turtle {
   } 
 
   public void run(String program) {
-    this.buf = createGraphics(width, height, P2D);
     this.buf.beginDraw();
     this.buf.background(255, 255, 255, 0);
-    this.buf.stroke(0);
-    this.buf.strokeWeight(2);
     for (int i = 0; i < program.length(); i++) {
       char c = program.charAt(i);
       if (!this.commands.containsKey(c)) {
@@ -135,9 +133,26 @@ TurtleCommand drawForward = new TurtleCommand() {
     }
     float x = t.position.x + t.stride * cos(t.heading);
     float y = t.position.y - t.stride * sin(t.heading);
+    t.buf.stroke(0);
+    t.buf.strokeWeight(2);    
     t.buf.line(t.position.x, t.position.y, x, y);
     t.position.x = x;
     t.position.y = y;
+  }
+};
+
+TurtleCommand drawForwardRed = new TurtleCommand() {
+  public void run(Turtle t) {
+    if (REPORT_MOVES) {
+      println("draw forward");
+    }
+    float x = t.position.x + t.stride * cos(t.heading);
+    float y = t.position.y - t.stride * sin(t.heading);
+    t.buf.stroke(255,0,0);
+    t.buf.strokeWeight(2);    
+    t.buf.line(t.position.x, t.position.y, x, y);
+    t.position.x = x;
+    t.position.y = y;    
   }
 };
 
