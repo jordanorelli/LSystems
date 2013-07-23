@@ -1,5 +1,5 @@
 ArrayList<Turtle> turtles = new ArrayList<Turtle>();;
-boolean FULL_SCREEN = true;
+boolean FULL_SCREEN = false;
 int WIDTH = 720;
 int HEIGHT = 850;
 CurveDefinition def;
@@ -12,15 +12,19 @@ void setup() {
   stroke(0);
   strokeWeight(2);
   strokeCap(ROUND);
+  setupParseRules();
+  setupTurtleCommands();
 
   curves.add(tree_1_27);
   curves.add(jorelli_0);
+  curves.add(jorelli_1);  
   curves.add(left_context_0);
   curves.add(left_context_1);  
   curves.add(tree_1_24_b);
   curves.add(tree_1_24_a);
   curves.add(gosperCurve);
   curves.add(hilbertCurve);
+  curves.add(new JSONCurveDefinition(this, "trees/hilbert.json"));
   def = curves.get(0);
 }
 

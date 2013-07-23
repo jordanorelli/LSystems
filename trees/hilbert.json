@@ -1,0 +1,15 @@
+{
+    "name": "hilbert",
+    "axiom": "A",
+    "rules": [
+        "A -> -BF+AFA+FB-",
+        "B -> +AF-BFB-FA+",
+    ],
+    "heading": 90,
+    "turn": 90,
+    "scale": 4.0,
+    "commands": {
+        "A": "drawForward",
+        "B": "drawForward"
+    }
+}

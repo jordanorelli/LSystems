@@ -1,6 +1,6 @@
 import java.util.Stack;
 
-boolean REPORT_MOVES = false;
+boolean REPORT_MOVES = true;
 
 class TurtleState {
   public PVector position;
@@ -19,15 +19,28 @@ public class Turtle {
   public float stride;
   public float theta;
   private int born;
-  private HashMap commands;
+  private TurtleCommandSet commands;
   private Stack history;
   private PGraphics buf;
+  
+  Turtle(PApplet app, TurtleCommandSet commands, float stride, float theta, float heading) {
+    this.buf = createGraphics(width, height, P2D);    
+    this.stride = stride;
+    this.theta = theta;
+    this.commands = commands;
+    this.heading = heading;
+    this.setDefaultCommands();
+    this.born = frameCount;
+    this.history = new Stack();
+    this.clear();
+    this.register(app);
+  }
 
   Turtle(PApplet app, float x, float y, float heading, float stride, float theta) {
     this.buf = createGraphics(width, height, P2D);    
     this.stride = stride;
     this.theta = theta;
-    this.commands = new HashMap();
+    this.commands = new TurtleCommandSet();
     this.setDefaultCommands();
     this.born = frameCount;
     this.history = new Stack();
@@ -58,21 +71,35 @@ public class Turtle {
   } 
 
   public void run(String program) {
+    println(program);
     this.buf.beginDraw();
     this.buf.background(255, 255, 255, 0);
     for (int i = 0; i < program.length(); i++) {
       char c = program.charAt(i);
-      if (!this.commands.containsKey(c)) {
-        return;
+      TurtleCommand cmd = this.commands.get(""+c);
+      if (cmd == null) {
+        println("no such command");
+        continue;
       }
-      TurtleCommand cmd = (TurtleCommand)this.commands.get(c);
+      println("wut");
+      println("running: " + cmd.name());
       cmd.run(this);
     }
     buf.endDraw();
   }
+  
+  public void run(String program, float x, float y) {
+    println("one");
+    this.initialState = new TurtleState(new PVector(x, y), this.heading);
+    this.clear();
+    println("two");
+    println("three");
+    this.run(program);
+    println("four");    
+  }
 
   public void cmd(char c, TurtleCommand command) {
-    this.commands.put(c, command);
+    this.commands.add(""+c, command);
   }
 
   private int age() {
@@ -123,25 +150,55 @@ public class Turtle {
 }
 
 abstract class TurtleCommand {
+  public abstract String name();
   public abstract void run(Turtle t);
 }
 
+// this is the type of shit you have to resort to when you don't have closures.
+class CompositeTurtleCommand extends TurtleCommand {
+  private TurtleCommand left;
+  private TurtleCommand right;
+
+  CompositeTurtleCommand(TurtleCommand left, TurtleCommand right) {
+    this.left = left;
+    this.right = right;
+  }
+  
+  public String name() {
+    return this.left.name() + " " + this.right.name();
+  }
+
+  public void run(Turtle t) {
+    this.left.run(t);
+    this.right.run(t);
+  }
+}
+
 TurtleCommand drawForward = new TurtleCommand() {
+  public String name() {
+    return "drawForward";
+  }
   public void run(Turtle t) {
     if (REPORT_MOVES) {
       println("draw forward");
     }
+    println("pooop");
     float x = t.position.x + t.stride * cos(t.heading);
     float y = t.position.y - t.stride * sin(t.heading);
+    println("ohhh");
     t.buf.stroke(0);
     t.buf.strokeWeight(2);    
     t.buf.line(t.position.x, t.position.y, x, y);
     t.position.x = x;
     t.position.y = y;
+    println("...done");
   }
 };
 
 TurtleCommand drawForwardRed = new TurtleCommand() {
+  public String name() {
+    return "drawForwardRed";
+  }
   public void run(Turtle t) {
     if (REPORT_MOVES) {
       println("draw forward");
@@ -157,6 +214,9 @@ TurtleCommand drawForwardRed = new TurtleCommand() {
 };
 
 TurtleCommand moveForward = new TurtleCommand() {
+  public String name() {
+    return "moveForward";
+  }
   public void run(Turtle t) {
     if (REPORT_MOVES) {
       println("move forward");
@@ -167,6 +227,9 @@ TurtleCommand moveForward = new TurtleCommand() {
 };
 
 TurtleCommand turnLeft = new TurtleCommand() {
+  public String name() {
+    return "turnLeft";
+  }
   public void run(Turtle t) {
     if (REPORT_MOVES) {
       println("turn left");
@@ -176,6 +239,9 @@ TurtleCommand turnLeft = new TurtleCommand() {
 };
 
 TurtleCommand turnRight = new TurtleCommand() {
+  public String name() {
+    return "turnRight";
+  }
   public void run(Turtle t) {
     if (REPORT_MOVES) {
       println("turn right");
@@ -185,12 +251,18 @@ TurtleCommand turnRight = new TurtleCommand() {
 };
 
 TurtleCommand fork = new TurtleCommand() {
+  public String name() {
+    return "fork";
+  }
   public void run(Turtle t) {
     t.fork();
   }
 };
 
 TurtleCommand unfork = new TurtleCommand() {
+  public String name() {
+    return "unfork";
+  }
   public void run(Turtle t) {
     t.unfork();
   }
