@@ -22,6 +22,9 @@ ParseRule parseDProduction = new ParseRule() {
     if (tokens.length != 3) {
       return null;
     }
+    if (!tokens[1].equals("->")) {
+      return null;
+    }
     if (tokens[0].length() != 1) {
       return null;
     }

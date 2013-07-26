@@ -27,7 +27,11 @@ public class Turtle {
     this.buf = createGraphics(width, height, P2D);    
     this.stride = stride;
     this.theta = theta;
-    this.commands = commands;
+    if (commands == null) {
+      this.commands = new TurtleCommandSet();
+    } else {
+      this.commands = commands;
+    }
     this.heading = heading;
     this.setDefaultCommands();
     this.born = frameCount;
@@ -64,8 +68,6 @@ public class Turtle {
     this.cmd('f', moveForward);
     this.cmd('-', turnRight);
     this.cmd('+', turnLeft);
-    this.cmd('r', drawForward);
-    this.cmd('l', drawForward);
     this.cmd('[', fork);
     this.cmd(']', unfork);
   } 

@@ -1,0 +1,15 @@
+{
+    "name": "gosper",
+    "axiom": "l",
+    "rules": [
+        "l -> l+r++r-l--ll-r+",
+        "r -> -l+rr++r+l--l-r"
+    ],
+    "heading": 90,
+    "turn": 60,
+    "scale": 4.0,
+    "commands": {
+        "l": "drawForward",
+        "r": "drawForward"
+    }
+}

@@ -1,4 +1,4 @@
-ArrayList<Turtle> turtles = new ArrayList<Turtle>();;
+ArrayList<Turtle> turtles = new ArrayList<Turtle>();
 boolean FULL_SCREEN = false;
 int WIDTH = 720;
 int HEIGHT = 850;
@@ -15,16 +15,19 @@ void setup() {
   setupParseRules();
   setupTurtleCommands();
 
+  File f = new File(sketchPath("trees"));
+  if (f.isDirectory()) {
+    String[] names = f.list();
+    for (String name : names) {
+      curves.add(new JSONCurveDefinition(this, "trees/" + name));      
+    }
+  } 
+
   curves.add(tree_1_27);
   curves.add(jorelli_0);
   curves.add(jorelli_1);  
   curves.add(left_context_0);
   curves.add(left_context_1);  
-  curves.add(tree_1_24_b);
-  curves.add(tree_1_24_a);
-  curves.add(gosperCurve);
-  curves.add(hilbertCurve);
-  curves.add(new JSONCurveDefinition(this, "trees/hilbert.json"));
   def = curves.get(0);
 }
 
@@ -42,7 +45,8 @@ void mouseWheel(MouseEvent event) {
   println(event.getAmount());
   if (event.getAmount() > 0) {
     generations++;
-  } else {
+  } 
+  else {
     if (generations > 1) {
       generations--;
     }
@@ -80,7 +84,7 @@ void nextCurve(boolean reverse) {
   if (i >= curves.size()) {
     i = 0;
   }
-  def = curves.get(i);  
+  def = curves.get(i);
 }
 
 void pushTurtle(Turtle t) {

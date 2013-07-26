@@ -3,7 +3,7 @@
     "axiom": "A",
     "rules": [
         "A -> -BF+AFA+FB-",
-        "B -> +AF-BFB-FA+",
+        "B -> +AF-BFB-FA+"
     ],
     "heading": 90,
     "turn": 90,
