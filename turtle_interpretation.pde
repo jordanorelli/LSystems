@@ -23,7 +23,6 @@ void setup() {
     }
   } 
 
-  curves.add(jorelli_0);
   curves.add(jorelli_1);  
   curves.add(left_context_0);
   curves.add(left_context_1);  

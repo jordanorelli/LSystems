@@ -49,39 +49,6 @@ class JSONCurveDefinition extends CurveDefinition {
   }
 }
 
-CurveDefinition jorelli_0 = new CurveDefinition() {
-  String name() {
-    return "jorelli_0";
-  }
-
-  Turtle drawAt(PApplet app, int x, int y, int generations) {
-    LSystem s = new LSystem();
-
-    SProduction p = new SProduction('F');
-    p.add("FF", 0.5);
-    p.add("F[+A]F", 0.25);
-    p.add("F[-B]F", 0.25);
-    s.rule(p);
-
-    p = new SProduction('A');
-    p.add("F-F", 0.25);
-    p.add("F-FF", 0.25);
-    p.add("F-F-F", 0.25);
-    p.add("F-F+F", 0.25);
-    s.rule(p);
-
-    s.rule('B', "F+F");
-
-    String program = s.gen("F", generations);
-
-    Turtle t = new Turtle(app, x, y, radians(90), 8.0, radians(20));
-    t.cmd('A', drawForward);
-    t.cmd('B', drawForward);
-    t.run(program);
-    return t;
-  }
-};
-
 CurveDefinition left_context_0 = new CurveDefinition() {
   String name() {
     return "left_context_0";
