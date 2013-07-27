@@ -1,3 +1,13 @@
+ArrayList<ParseRule> ParseRules = new ArrayList<ParseRule>();
+
+void setupParseRules() {
+  ParseRules.add(parseDProduction);
+}
+
+abstract class ParseRule {
+  abstract boolean parse(LSystem sys, String[] tokens);
+}
+
 static class Context {
   public static boolean matchLeft(String axiom, int index, char c) {
     int left_i = Context.left(axiom, index);
@@ -117,5 +127,15 @@ class LSystem {
 
     return buf.toString();
   }
+
+  public boolean parse(String production) {
+    String[] tokens = splitTokens(production);
+    for (ParseRule parseFn : ParseRules) {
+      if (parseFn.parse(this, tokens)) {
+        return true;
+      }
+    }
+    return false;
+  }  
 }
 

@@ -31,12 +31,9 @@ class JSONCurveDefinition extends CurveDefinition {
 
     String[] rules = json.getJSONArray("rules").getStringArray();
     for (String rule : rules) {
-      String[] ruleTokens = splitTokens(rule);
-      Production p = parse(ruleTokens);
-      if (p == null) {
-        continue;
+      if(!this.sys.parse(rule)) {
+        println("unable to parse rule: " + rule);
       }
-      this.sys.rule(p);
     }
   }
 
