@@ -1,0 +1,14 @@
+{
+    "name": "tree_1_27",
+    "axiom": "F",
+    "rules": [
+        "F -> F[+F]F[-F]F 0.33",
+        "F -> F[+F]F      0.33",
+        "F -> F[-F]F      0.34"
+
+    ],
+    "heading": 90,
+    "turn": 20,
+    "scale": 4.0
+}
+

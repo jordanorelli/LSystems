@@ -2,6 +2,7 @@ ArrayList<ParseRule> ParseRules = new ArrayList<ParseRule>();
 
 void setupParseRules() {
   ParseRules.add(parseDProduction);
+  ParseRules.add(parseSProduction);
 }
 
 abstract class ParseRule {
@@ -103,7 +104,7 @@ class LSystem {
     return axiom;
   }
 
-  private Production production(String axiom, int index) {
+  public Production match(String axiom, int index) {
     for (Production p : this.productions) {
       if (p.accept(axiom, index)) {
         return p;
@@ -116,7 +117,7 @@ class LSystem {
     StringBuffer buf = new StringBuffer();
 
     for (int i = 0; i < axiom.length(); i++) {
-      Production p = this.production(axiom, i);
+      Production p = this.match(axiom, i);
       if (p != null) {
         buf.append(p.successor());
       } 

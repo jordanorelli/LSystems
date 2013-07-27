@@ -29,7 +29,6 @@ class TurtleCommandSet {
   }
   
   public TurtleCommand get(String name) {
-    println("get command: " + name);
     if (this.cmds.containsKey(name)) {
       return this.cmds.get(name);
     }

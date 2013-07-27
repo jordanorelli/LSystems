@@ -1,6 +1,6 @@
 import java.util.Stack;
 
-boolean REPORT_MOVES = true;
+boolean REPORT_MOVES = false;
 
 class TurtleState {
   public PVector position;
@@ -80,24 +80,18 @@ public class Turtle {
       char c = program.charAt(i);
       TurtleCommand cmd = this.commands.get(""+c);
       if (cmd == null) {
-        println("no such command");
+        println("no such command: " + c);
         continue;
       }
-      println("wut");
-      println("running: " + cmd.name());
       cmd.run(this);
     }
     buf.endDraw();
   }
   
   public void run(String program, float x, float y) {
-    println("one");
     this.initialState = new TurtleState(new PVector(x, y), this.heading);
     this.clear();
-    println("two");
-    println("three");
     this.run(program);
-    println("four");    
   }
 
   public void cmd(char c, TurtleCommand command) {
@@ -184,16 +178,13 @@ TurtleCommand drawForward = new TurtleCommand() {
     if (REPORT_MOVES) {
       println("draw forward");
     }
-    println("pooop");
     float x = t.position.x + t.stride * cos(t.heading);
     float y = t.position.y - t.stride * sin(t.heading);
-    println("ohhh");
     t.buf.stroke(0);
     t.buf.strokeWeight(2);    
     t.buf.line(t.position.x, t.position.y, x, y);
     t.position.x = x;
     t.position.y = y;
-    println("...done");
   }
 };
 
