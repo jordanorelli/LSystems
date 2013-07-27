@@ -19,13 +19,12 @@ void setup() {
   if (f.isDirectory()) {
     String[] names = f.list();
     for (String name : names) {
+      println("parsing trees/"+name);
       curves.add(new JSONCurveDefinition(this, "trees/" + name));      
     }
   } 
 
-  curves.add(jorelli_1);  
-  curves.add(left_context_0);
-  curves.add(left_context_1);  
+  curves.add(jorelli_1);    
   def = curves.get(0);
 }
 

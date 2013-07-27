@@ -1,0 +1,19 @@
+{
+    "name": "jorelli_1",
+    "axiom": "baaaaF",
+    "rules": [
+        "b > a -> b          ",
+        "    b -> a          ",
+        "b > F -> b          ",
+        "    F -> FF     0.5 ",
+        "    F -> F[+F]F 0.25",
+        "    F -> F[-F]F 0.25"
+    ],
+    "heading": 90,
+    "turn": 20,
+    "scale": 8.0,
+    "commands": {
+        "a": "drawForward",
+        "b": "drawForwardRed",
+    }
+}

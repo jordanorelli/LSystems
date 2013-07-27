@@ -48,15 +48,10 @@ ParseRule parseSProduction = new ParseRule() {
   boolean parse(LSystem sys, String[] tokens) {
     SProduction sp;
 
-    if (tokens.length != 4) {
+    if (tokens.length != 4
+      || !tokens[1].equals("->")
+      ||  tokens[0].length() != 1)
       return false;
-    }
-    if (!tokens[1].equals("->")) {
-      return false;
-    }
-    if (tokens[0].length() != 1) {
-      return false;
-    }
 
     Production p = sys.match(tokens[0], 0);
     if (p == null) {

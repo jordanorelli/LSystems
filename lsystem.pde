@@ -3,6 +3,7 @@ ArrayList<ParseRule> ParseRules = new ArrayList<ParseRule>();
 void setupParseRules() {
   ParseRules.add(parseDProduction);
   ParseRules.add(parseSProduction);
+  ParseRules.add(parseC10Production);
 }
 
 abstract class ParseRule {
@@ -55,12 +56,12 @@ static class Context {
   }
 }
 
-class C_1_0_Production implements Production {
+class C10Production implements Production {
   private char left;
   private char pred;
   private String succ;
 
-  C_1_0_Production(char left, char pred, String succ) {
+  C10Production(char left, char pred, String succ) {
     this.left = left;
     this.pred = pred;
     this.succ = succ;
@@ -78,6 +79,20 @@ class C_1_0_Production implements Production {
   }
 }
 
+// a < b -> b
+ParseRule parseC10Production = new ParseRule() {
+  boolean parse(LSystem sys, String[] tokens) {
+    if (tokens.length != 5
+      ||  tokens[0].length() != 1
+      || !tokens[1].equals("<")
+      ||  tokens[2].length() != 1
+      || !tokens[3].equals("->"))
+      return false;
+    sys.rule(new C10Production(tokens[0].charAt(0), tokens[2].charAt(0), tokens[4]));
+    return true;
+  }
+};
+
 class LSystem {
   private ArrayList<Production> productions;
 
@@ -94,7 +109,7 @@ class LSystem {
   }
 
   public void ruleLeft(char left, char pred, String succ) {
-    this.productions.add(new C_1_0_Production(left, pred, succ));
+    this.productions.add(new C10Production(left, pred, succ));
   }
 
   public String gen(String axiom, int n) {
