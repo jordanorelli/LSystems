@@ -24,7 +24,6 @@ void setup() {
     }
   } 
 
-  curves.add(jorelli_1);    
   def = curves.get(0);
 }
 
@@ -39,12 +38,11 @@ void mousePressed(MouseEvent event) {
 }
 
 void mouseWheel(MouseEvent event) {
-  println(event.getAmount());
   if (event.getAmount() > 0) {
     generations++;
   } 
   else {
-    if (generations > 1) {
+    if (generations > 0) {
       generations--;
     }
   }

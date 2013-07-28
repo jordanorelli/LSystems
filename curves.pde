@@ -27,7 +27,11 @@ class JSONCurveDefinition extends CurveDefinition {
     }
     this.app = app;
 
-    this.sys = new LSystem();
+    if (json.hasKey("ignore")) {
+      this.sys = new LSystem(json.getString("ignore"));
+    } else {
+      this.sys = new LSystem();
+    }
 
     String[] rules = json.getJSONArray("rules").getStringArray();
     for (String rule : rules) {

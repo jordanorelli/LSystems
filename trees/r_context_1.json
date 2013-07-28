@@ -1,0 +1,17 @@
+{
+    "name": "r_context_1",
+    "axiom": "aaaaa[+aa+aaa][-FF[+FF]]aaaaaba",
+    "rules": [
+        "a > b -> b",
+        "b     -> a"
+    ],
+    "heading": 90,
+    "turn": 20,
+    "scale": 8.0,
+    "commands": {
+        "a": "drawForward",
+        "b": "drawForwardRed"
+    },
+    "ignore": "+-"
+}
+

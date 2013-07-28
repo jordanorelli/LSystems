@@ -80,7 +80,6 @@ public class Turtle {
       char c = program.charAt(i);
       TurtleCommand cmd = this.commands.get(""+c);
       if (cmd == null) {
-        println("no such command: " + c);
         continue;
       }
       cmd.run(this);
