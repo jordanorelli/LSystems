@@ -32,9 +32,3 @@ class Stochastic implements Successor {
     this.options.add(option);
   }
 }
-
-SuccessorParseRule parseStochastic = new SuccessorParseRule() {
-  Successor parse(LSystem sys, String []tokens) {
-    return null;
-  }
-};
